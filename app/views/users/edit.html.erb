@@ -1,0 +1,66 @@
+<%= link_to users_path, class: 'close-page' do %> &times; <% end %>
+
+<!-- Modal -->
+<div class="modal fade" id="user-change-password" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Cambia Password</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_for @user, :html => {:multipart => true, :id => "edit_password_user_form"},:url => url_for(controller: 'users', action: 'change_password') do |f| %>
+          <div class="form-group">
+            <%= f.password_field :password, :autocomplete => "off", class: 'form-control', placeholder: 'password (min 8 caratteri)'  %>
+          </div>
+          <div class="form-group">
+            <%= f.password_field :password_confirmation, class: 'form-control', placeholder: 're-inserisci password' %>
+          </div>
+         <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger">Salva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+	<div class="col-md-offset-2 col-md-8 col-lg-offset-2 col-lg-8">
+		<div class="form-group">
+			<div class="controls">
+				<h2>Modifica Profilo</h2>
+			</div>
+		</div>
+		<%= form_for @user, :html => {:multipart => true, :id => "update_user"} ,:url => url_for(controller: 'users', action: 'update') do |f| %>
+			<div class="form-group">
+				<div class="controls">
+					<%= f.text_field :first_name, :autofocus => true, class: 'form-control no-border-radius', placeholder: 'Nome', required: true %>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="controls">
+					<%= f.text_field :last_name, class: 'form-control no-border-radius', placeholder: 'Cognome', required: true %>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="controls">
+					<%= f.text_field :email, class: 'form-control no-border-radius', placeholder: 'Cognome', required: true %>
+				</div>
+			</div>
+
+			<a href="" data-toggle="modal" data-target="#user-change-password" class="btn btn-secondary">Cambia Password</a>
+			
+			<hr>
+
+      <div class="form-group">
+      	<div class="controls">
+      		<%= f.submit "Salva", class: 'btn btn-success'%>
+      		<%= link_to "Annulla", users_path, class: 'btn btn-default'%>
+      	</div>
+      </div>
+ 
+		<% end %>
+	</div>
+</div>

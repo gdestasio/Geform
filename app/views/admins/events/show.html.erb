@@ -1,0 +1,135 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">  
+            <div>Stato evento  
+              <% if @event.status == "creato" %>
+                <span style="margin-left:10px;" class="badge badge-default"><%= @event.status %></span>
+              <% end %>
+
+              <% if @event.status == "schedulato" %>
+                <span style="margin-left:10px;" class="badge badge-primary"><%= @event.status %></span>
+              <% end %>
+
+              <% if @event.status == "cancellato" %>
+                <span style="margin-left:10px;" class="badge badge-danger"><%= @event.status %></span>
+              <% end %>
+
+              <% if @event.status == "proposto" %>
+                <span style="margin-left:10px;" class="badge badge-info"><%= @event.status %></span>
+              <% end %>
+
+              <% if @event.status == "chiuso" %>
+                <span style="margin-left:10px;" class="badge badge-warning"><%= @event.status %></span>
+              <% end %>
+
+              <% if @event.status == "scaduto" %>
+                <span style="margin-left:10px;" class="badge badge-plain"><%= @event.status %></span>
+              <% end %>        
+            </div><br><br>
+			<h2 style="margin-bottom:20px;" class="oda-color"><%= @event.name.capitalize %></h2>            
+            
+			<% if @event.proponent_id %>
+				<p>L'evento proposto dall'associazione <strong><%= @event.proponent.name %></strong> si terrà in data <strong><%= @event.date %></strong> presso <strong><%= @event.location %></strong> sito in <strong><%= @event.longaddress %>.</strong></p>
+			<% else %>
+				<p>L'evento si terrà in data <strong><%= @event.date %></strong> presso <strong><%= @event.location %></strong> sito in <strong><%= @event.longaddress %>.</strong></p>
+			<% end %>
+
+			<br>
+			<p class="text-justify"><%= @event.description %></p>
+			<br>
+			<hr>
+            <p style="text-align:center">
+            <% if @event.brochure.blank? %>
+                Nessuna brochure caricata
+            <% else %>
+                <%= link_to admins_events_download_brochure_path(event_id: @event.id),title: 'Dettagli', class: 'btn btn-sm btn-info' do %><i class="fa fa-eye"></i> Scarica brochure<% end %>        
+            <% end %>            
+            </p>
+            <hr>
+
+			<h3 style="margin-bottom:20px;">Riservato a</h3>			
+			<div class="row">
+				<div class="col-md-12">
+					<% @event.event_user_titles.each do |t|%>
+						<% User.titles.collect.select{|tl| tl[1]==t.user_title }.collect.each do |t| %>
+							<div class="event-detail">
+							<strong><%= t[0].humanize %></strong>
+							</div>							
+						<%end%>
+					<%end%>
+				</div>
+
+
+
+				<div class="col-md-12">
+					<% @event.event_user_titles.each do |t|%>
+						<% User.titles.collect.select{|tl| tl[1]==t.user_title }.collect.each do |t| %>
+							<p><span class="badge badge-primary"><%= t[0].humanize %></span></p>							
+						<%end%>
+					<%end%>
+				</div>
+
+
+			</div>
+			<hr>
+			<h3 style="margin-bottom:20px;">Dettagli</h3>			
+			<div class="row">
+				<div class="col-md-12">
+
+
+					<button type="button" class="btn btn-w-m btn-success disabled"><strong>stato</strong> <%= @event.status %></button>                      
+			        <button type="button" class="btn btn-w-m btn-success disabled"><strong>crediti</strong> <%= @event.credits %></button>
+			        <button type="button" class="btn btn-w-m btn-success disabled"><strong>categoria</strong> <%= @event.category %></button>
+			        <button type="button" class="btn btn-w-m btn-success disabled"><strong>posti</strong> <%= @event.seats %></button>
+			        <button type="button" class="btn btn-w-m btn-success disabled"><strong>prenotati</strong> <%= @event.subscriptions.size %></button>
+
+
+					
+
+					<% if not @waiting_lists.empty? %>
+						<div class="event-detail">
+							<strong>in lista</strong> <%= @waiting_lists.size %>
+						</div>
+					<% end %>
+				</div>
+			</div>
+			 <% if @event.closing_at %>
+        <% if @event.closing_at >= Time.now%>
+          <br>
+          <p><span style="color: #c00">ATTENZIONE:</span> le prenotazioni chiudono il <strong><%= @event.closing_at.strftime("%d/%m/%Y") %></strong> alle <strong><%= @event.closing_at.strftime("%H:%M") %></strong></p>
+        <% else %>
+          <br>
+          <p><span style="color: #c00">ATTENZIONE:</span> le prenotazioni sono chiuse.</p>
+        <% end %>
+      <% end %>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">
+			<span><%= @event.location %></span>, <span><%= @event.longaddress %></span><br><br>
+			<iframe src="http://maps.google.com/?q=<%= @event.longaddress %>&amp;output=embed" width="100%" height="300px" frameborder="0" style="border:0"></iframe>
+		</div>
+	</div>
+</div>
+<% if not @event.speakers.empty? %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box">
+        <span><strong>relatori:</strong> <%= @event.speakers.map(&:name).join(",")%></span>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+
+
+<script type="text/javascript">
+	  $('.menu').removeClass('active');
+    $('#events').addClass('active');
+</script>
+
+	

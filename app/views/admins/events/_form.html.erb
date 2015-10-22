@@ -1,0 +1,257 @@
+<style>
+	.tagsinput div input {
+		width: 270px;
+	}
+</style>
+
+<div class="available-birthplace">
+<script>
+$(function() {
+  var availableTags = [
+    <%=raw @birthplaces.to_s.gsub("[","").gsub("]","").gsub("=>",":")%>
+  ];
+  $( "#event_city" ).autocomplete({
+      minLength: 2,
+      change: function(event,ui){
+        $(this).val((ui.item ? ui.item.label : ""));
+      },
+
+      select: function( event, ui ) {
+           $(this).val(ui.item.label);           
+           return false;
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+
+    source: availableTags
+  });
+});
+</script>
+</div>
+
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Nome</label>
+		<%= f.text_field :name, class: 'form-control', placeholder: 'Nome evento' , required: true, autofocus: true, value: "#{(session[:generator] && session[:generator]!="" )? session[:generator]['name'] : @event.name}"%>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Descrizione</label>
+		<%= f.text_area :description, :rows => 4, class: 'form-control' %>
+	</div>
+</div>
+
+<div class="form-group">
+  <div class="controls">
+  	<label for="" class="flabel">Categoria</label>
+    <%= select("event", "category", Event.categories.collect  { |e| [e[0].humanize, e[0]] }, {include_blank: 'seleziona la categoria...', selected: @event.category}, class: 'form-control') %>
+   </div>
+</div>
+
+
+<div class="form-group">
+  <div class="controls">
+  	<label for="" class="flabel"><b>Rivolto a:</b></label>
+    <input  style="float:right;" type="checkbox" id="chk_select_all" value=""><div style="float:right;">Seleziona tutti&nbsp;</div>
+    <br>
+  	<% User.titles.collect.each do |e| %>
+  		<% if @event.event_user_titles.map(&:user_title).include?e[1] %>  			                
+  			<p style="font-size:16px;"><%= user_title_description(e[1]) %> <input name="user_title[]" style="float:right;" type="checkbox" checked="checked" value="<%= e[1] %>"></p>
+  		<% else %>
+  			<p style="font-size:16px;"><%= user_title_description(e[1]) %> <input name="user_title[]" style="float:right;" type="checkbox" value="<%= e[1] %>"></p>
+  		<% end %>
+  		 
+	<% end %>	
+   </div>
+</div>
+<br>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Location</label>
+		<%= f.text_field :location, class: 'form-control', placeholder: 'Location' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Città</label>
+		<%= f.text_field :city, class: 'form-control', id: 'event_city', placeholder: 'Città', required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Indirizzo</label>
+		<%= f.text_field :address, class: 'form-control', placeholder: 'Indirizzo' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Data/Ora Inizio</label>
+		<%= f.text_field :start_at, class: 'form-control datetimepicker', placeholder: 'Data Inizio' , required: true, value: "#{@event.start_at ? @event.start_at.strftime("%d/%m/%Y %H:%M") : nil}" %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Data/Ora Fine</label>
+		<%= f.text_field :end_at, class: 'form-control datetimepicker', placeholder: 'Data Fine' , required: true, value: "#{@event.end_at ? @event.end_at.strftime("%d/%m/%Y %H:%M") : nil}" %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Data/Ora Chiusura iscrizioni</label>
+		<%= f.text_field :closing_at, class: 'form-control datetimepicker', placeholder: 'Chiusura Prentotazioni', value: "#{@event.closing_at ? @event.closing_at.strftime("%d/%m/%Y %H:%M") : nil}"%>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Posti disponibili</label>
+	  <%=f.text_field :seats, :class =>'form-control'%>
+  </div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Crediti</label>
+	  <%=f.text_field :credits, :class =>'form-control', value: "#{@event.credits>0 ? @event.credits : session[:credits].to_i}"%>
+  </div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Relatori</label>
+		<input name="event[speakers]" id="tags" class="form-control" />
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+		<label for="" class="flabel">Percentuale minima di presenza</label>
+	  <%=f.select :min_presence_percentage, options_for_select((10..100).step(10).to_a.map{|s| ["#{s}%", s]}, selected: @event.min_presence_percentage ? @event.min_presence_percentage : 100), {}, {:class=>"form-control"} %>      
+  </div>
+</div>
+<hr>    
+<div class="form-group">
+  <div class="controls">
+    <label for="" class="flabel">Upload Brochure</label>
+    <% if not @event.brochure.blank? %>
+      <span class="fileUpload btn btn-default btn-sm" filename="brochure"><span class="fileUploadText"><i class="fa fa-cloud-upload fa-fw"></i> sostituisci file allegato (<%= @event.brochure %>)
+      </span><%= file_field_tag :brochure, class: "upload", id: "brochure", filename: "brochure", value: @event.brochure %></span>
+      <a onclick="removeBrochure(); return false;" class="btn-remove-brochure"  style="color: #c66; cursor: pointer;"> <i class="fa fa-times"></i></a>
+    <% else %>
+      <span class="fileUpload btn btn-success btn-sm"><span class="fileUploadText"><i class="fa fa-cloud-upload fa-fw"></i> scegli
+      </span><%= file_field_tag :brochure, class: "upload", id: "brochure", filename: "brochure", value: ''%></span>
+      <a style="display:none;" onclick="removeBrochure(); return false;" class="btn-remove-brochure"  style="color: #c66; cursor: pointer;"> <i class="fa fa-times"></i></a>
+    <% end %>    
+      
+  </div>
+</div>   
+
+<script>
+	$('#tags').tagsInput({
+   'height':'100px',
+   'width':'100%',
+   'interactive':true,
+   'defaultText':'aggiungi nomi relatori separati da virgola',
+   'delimiter': [',',';'],
+   'removeWithBackspace' : true,
+   'minChars' : 0,
+   'maxChars' : 0, //if not provided there is no limit
+   'placeholderColor' : '#666666'
+	});
+</script>
+
+
+<% @event.speakers.each do |speaker|%>
+		<script>$('#tags').addTag('<%= speaker.name %>');</script>
+<% end %>
+
+<script type="text/javascript">
+	  $('.menu').removeClass('active');
+    $('#events').addClass('active');
+
+    $('.upload').on('change', saveBrochure);
+
+    function saveBrochure(event) {      
+      brochure = event.target.files[0];   
+      $('.fileUpload').removeClass('btn-success').addClass('btn-default');
+      $ ('.fileUploadText').html('<i class="fa fa-cloud-upload fa-fw"></i>  sostituisci file allegato ' + '(' + event.target.files[0].name + ')');
+      $('#brochure').attr('value', event.target.files[0].name);
+      $('.btn-remove-').show();      
+      $('.btn-remove-brochure').show();
+    }
+    function removeBrochure(){    
+      delete brochure;
+      $('#brochure').addClass('btn-success').removeClass('btn-default');
+      $('.fileUploadText').html('<i class="fa fa-cloud-upload fa-fw"></i>  allega');
+      $('#brochure').attr('value', '');      
+      $.get('/admins/events/remove_brochure?event_id=<%=@event.id%>');       
+      $('.btn-remove-brochure').hide();
+    }
+</script>
+<style type="text/css">
+    .fileUpload {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+
+  .fileUpload input.upload_extra {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+
+  .fileUpload input.upload-cert {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+
+</style>
+
+<script type="text/javascript">
+  $('#chk_select_all').on('click',function(){
+    if ($(this).prop('checked')==true){
+      $('[name="user_title[]"]').prop('checked','true');
+    }else{
+      $('[name="user_title[]"]').prop('checked','');
+    }    
+  });
+  $('[name="user_title[]"]').on('click',function(){
+    $('#chk_select_all').prop('checked','');
+  });
+</script>

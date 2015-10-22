@@ -1,0 +1,30 @@
+<div class=" text-center loginscreen animated fadeInDown">
+  <div>
+      <div>
+          <h1 class="logo-name">GeForm</h1>
+      </div>
+      <br>
+    <h2>Password dimenticata?</h2>
+      <div class="box" style="width:650px;margin:auto;">
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <br>
+        <div class="form-group">
+          <%= f.email_field :email, autofocus: true, class: 'form-control', placeholder: "Email" %>
+        </div>
+        <br>
+        <div class=>           
+          <%= f.submit "Reset password", class: 'btn btn-success' %>
+        </div>
+      <% end %>
+      </div>      
+      <br>
+        <div class="row">
+    <div class="col-md-6">
+      <div class="first" style=" float:right;"><%= image_tag asset_path("loghi/odafg.png"), width: '200px'  %></div>              
+    </div>
+    <div class="col-md-6">
+      <div class="second" style=" float:left;"><%= image_tag asset_path("loghi/cinfor.png"), width: '300px'  %></div>                                 
+    </div>
+  </div>
+  </div>
+</div>

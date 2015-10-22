@@ -1,0 +1,5 @@
+<p>Benvenuto <%= @email %>!</p>
+
+<p>Per confermare l'iscrizione utilizzare il seguente link:</p>
+
+<p><%= link_to 'Conferma iscrizione', confirmation_url(@resource, confirmation_token: @token) %></p>

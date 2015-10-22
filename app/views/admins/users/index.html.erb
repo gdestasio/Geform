@@ -1,0 +1,100 @@
+ <script>
+    $(function() {
+      var availableTags = [
+        <%=raw @users_available.to_s.gsub("[","").gsub("]","").gsub("=>",":")%>
+      ];
+      $( "#search-user" ).autocomplete({
+         minLength: 2,
+         select: function( user, ui ) {
+            $(this).val(ui.item.label);
+            window.location.href="/admins/users/" + ui.item.value + "/show/";
+            return false;
+          },
+          focus: function() {
+            // pruser value inserted on focus
+            return false;
+          },
+
+        source: availableTags
+      }).data("ui-autocomplete")._renderItem = function (ul, item) {
+         return $("<li></li>")
+             .data("item.autocomplete", item)
+             .append("<a>" + item.label + "</a>")
+             .appendTo(ul);
+      };
+      $( "#search-user" ).autocomplete( "option", "appendTo", "#form-search-user" );
+    });
+
+    $('.modal').on('shown.bs.modal', function() {
+      $(this).find('[autofocus]').focus();
+    });
+  </script>
+
+<!-- Modal -->
+<div class="modal fade" id="search-user-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:700px">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Ricerca Utente</h4>
+      </div>
+      <div class="modal-body">
+        <div id="form-search-user">
+            <input class="form-control" id="search-user" autofocus placeholder="cerca per nome, email o codifce fiscale">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% if @users.empty? %>
+	<div class="ef">
+	  <i class="fa fa-users fa-4x"></i><br>
+	  <p>Non sono presenti <strong>utenti</strong> al momento</p>
+	</div>
+<% else %>
+   <% if params[:query] %>
+      <p>La ricerca <strong><%= params[:query] %></strong> ha prodotto i seguenti risultati: <a class="pull-right" style="color:red" href="/admins/users"><i class="fa fa-times"></i></a></p>
+  <% end %>
+	<div class="list-table">
+    <%= render :partial => 'users'%>   
+  </div>
+
+	<% if @pagination and @users.total_entries > WillPaginate.per_page %>
+  	<div id="loadmore">
+  		<a>visualizza più utenti</a>
+  	</div>
+  <% end %>
+<% end %>
+
+<script type="text/javascript">
+	  $('.menu').removeClass('active');
+    $('#users').addClass('active');
+</script>
+
+
+<% if not params[:query]%>
+  <script type="text/javascript">
+
+    window.finished = false;
+    var page = 1;
+
+    $('#loadmore').click(function(e) {
+      e.preventDefault();
+      page++;
+      var request= $.ajax({
+        url: "/admins/users/loadmore?page=" + page,
+        type: 'get',
+        dataType: 'script'
+      });
+    });
+
+    $('#search-user').keyup(function(e) {
+      if(e.which == 13) {
+        var query = $(this).val();
+        window.location.href="/admins/users?query=" + query;
+      }
+    });
+  </script>
+<% end %>

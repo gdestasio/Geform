@@ -1,0 +1,119 @@
+<style type="text/css">
+  .info {
+    font-size: 1.5em;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+  }
+  .badge{
+    border: 1px solid #aaa;
+    font-size: 13px;
+    padding: 10px;
+  }
+.ibox {
+   position: relative;
+  background: #fff;
+  padding: 15px;
+  -webkit-transition: all .3s ease;
+  -moz-transition: all .3s ease;
+  transition: all .3s ease;
+  min-height: 170px;
+  margin-bottom: 20px;
+  border-color: #888 !important;
+  border-image: none;
+  border-style: solid;  
+  border-width: 4px 1px 1px 1px;
+}
+
+.ibox h3 {
+    color: #444;
+    margin: 0 0;
+    font-size: 1.3em;
+    margin-bottom:10px;
+  }
+
+ .ibox span {
+    font-size: 0.9em;
+    color: #444;
+  }
+
+
+ .ibox .info {
+    font-size: 1em;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+  }
+
+
+.ibox:hover {
+  background: #f9f9f9;
+}
+
+#loadmore {
+  cursor: pointer;
+  z-index: 999;
+  color: #aaa;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 5px;
+
+  a {
+    font-size: 17px
+  }
+}
+
+</style>
+<h2>Prossimi eventi in calendario</h2>
+<hr>
+<br>
+<div class="list-table-body">
+  <% if @events.empty? %>
+  <i class="fa fa-calendar fa-5x"></i>&nbsp;&nbsp; <span style="font-size:24px">Nessun evento presente in calendario</span><br><br>
+  <% else %>
+  <br>  
+  <div class="row list-table">
+    <%= render :partial => 'events'%>   
+</div>
+
+  <% end %>
+</div>
+<%if @events.total_entries > 4 %>
+<div id="load-more-box" title="Carica più risultati"> <a class="btn btn-secondary">Carica più risultati</a></div>
+<%end%>
+
+<!--<hr>
+<br>
+<div class="panel panel-warning">
+  <div class="panel-heading" style="padding:20px;"><strong style="font-size:18px;">Disposizioni in materia di formazione continua</strong></div>
+  <div class="panel-body" style="text-align:justify;font-size: 13px">
+    <p>Nell’esercizio della professione, l’avvocato è tenuto a realizzare il principio di competenza a vantaggio dell’interesse pubblico – e quindi dei cittadini - alla corretta prestazione professionale ed alla migliore amministrazione della giustizia.</p>
+    <p>A questo fine, è tenuto a curare la formazione nell’arco di tutta la vita professionale.</p>
+    <p>Il dovere di formazione continua è stato dapprima introdotto nel Codice deontologico forense e disciplinato dal CNF con un proprio regolamento adottato a luglio 2007.</p>
+    <p>Ora tale dovere è consacrato, divenendo obbligo di legge,  nell’articolo 11 della Nuova disciplina dell’ordinamento professionale forense (Legge 247/2012) e nel regolamento CNF attuativo della riforma (n. 6/2014); oltre che nel Nuovo Codice deontologico forense.</p>
+    <p>In questa pagina sono pubblicati i regolamenti che sovraintendono all’adempimento di tale obbligo, tenendo conto dell' avvicendarsi  delle normative avvenuto  il primo gennaio 2015.</p>
+    Sono pubblicati anche le circolari e gli altri documenti utili per orientarsi.</p>
+    <p>FASE TRANSITORIA. Si specifica che in fase di prima applicazione del nuovo regolamento, per gli avvocati e praticanti abilitatati che risultino già iscritti negli albi alla data di entrata in vigore del nuovo regolamento, il primo periodo di valutazione triennale decorre dal primo gennaio 2014.</p>
+    <p>Inoltre, ai fini della maturazione dei crediti formativi, sono fatti salvi gli eventi già accreditati secondo le disposizioni previgenti.</p>
+    <p>L’Unità operativa per la formazione continua e l’assegnazione dei crediti formativi presso la  Fondazione dell’Avvocatura italiana svolge per conto del Consiglio Nazionale Forense l’istruttoria preliminare sulle istanze di accreditamento in materia di formazione professionale continua inoltrate al CNF, aventi ad oggetto le attività formative di cui all'art. 16 del Regolamento per la formazione continua (Regolamento CNF n.6/2014).</p>
+    <p>Dal 2007, anno di entrata in vigore del previgente Regolamento per la formazione continua del CNF (successivamente sostituito dal Regolamento CNF n.6/2014, in vigore dal 1° gennaio 2015), la Fondazione dell’Avvocatura Italiana svolge per conto del Consiglio l’istruttoria preliminare sulle istanze di accreditamento di attività formative inoltrate al CNF. L’Unità operativa per la formazione continua e l’assegnazione dei crediti formativi della Fondazione, rapportandosi al Coordinatore della Commissione centrale per l'accreditamento della formazione del CNF, verifica l’ammissibilità delle istanze pervenute e dà comunicazione dell’esito ai soggetti richiedenti.</p>
+    <p>Su direttive della Commissione, inoltre, assiste e soddisfa le esigenze informative di professionisti, enti, organizzazioni e Consigli territoriali dell’Ordine.</p>    
+  </div>
+</div>
+-->
+<% if not params[:query]%>
+<script type="text/javascript">
+
+  window.finished = false;
+  var page = 1;
+
+  $('#load-more-box').click(function(e) {
+    page++;
+    var request= $.ajax({
+      url: "/loadmore?page=" + page,
+      type: 'get',
+      dataType: 'script'
+    });
+  });
+</script>
+<% end %>

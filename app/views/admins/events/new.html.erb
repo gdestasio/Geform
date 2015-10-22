@@ -1,0 +1,28 @@
+<div class="row">
+	 <div class="col-md-offset-2 col-md-8 col-lg-offset-2 col-lg-8">
+	 	<%= form_for @event, :html => {:multipart => true, :id => "new_event" , :class => "form-horizontal"} ,:url => admins_events_create_path do |f| %>
+		 	<%= render partial: "form", :locals => { :@event => @event, :f => f }%>
+      <div class="form-group">
+        <div class="controls">
+    			<%= f.submit "Aggiungi", class: 'btn btn-danger' %>
+    			<%= link_to admins_events_path, class: 'btn btn-default',  'data-turbolinks-track' => false do %> Annulla <% end %>
+        </div>
+      </div>
+		<% end %>
+	</div>
+</div>
+
+<%= javascript_tag do -%>
+	$("#new_event").validate({
+    rules: {
+      "event[name]": {required: true },
+      "event[location]": {required: true },
+      "event[seats]" : {required: true, min: 1},
+      "event[credits]" : {required: true, min: 1}
+    }
+  });
+  $('.nav > li').removeClass('active');
+  $('#events').addClass('active');   
+
+  $('.datetimepicker').datetimepicker();
+<% end %>

@@ -1,0 +1,37 @@
+<script>
+	$('.nav > li').removeClass('active');
+  $('#events').addClass('active');   
+</script>
+
+
+<div class="list-table-body">
+  <% if @events.empty? %>
+    <h3>Nessun evento presente con questo filtro</h3>
+  <% else %>
+    <%= render :partial => 'events',:locals => {:@events => @events, :@recents => true }%>
+  <% end %>
+</div>
+
+<% if not params[:query]%>
+  <%if @events.total_entries > WillPaginate.per_page %>
+    <div id="load-more-box" title="Carica più risultati"> <a class="btn btn-secondary">Carica più risultati</a></div>
+  <%end%>
+<% end %>
+
+
+<% if not params[:query]%>
+  <script type="text/javascript">
+
+    window.finished = false;
+    var page = 1;
+
+    $('#load-more-box').click(function(e) {
+      page++;
+      var request= $.ajax({
+        url: "/users/events/loadmore?page=" + page,
+        type: 'get',
+        dataType: 'script'
+      });
+    });
+  </script>
+<% end %>

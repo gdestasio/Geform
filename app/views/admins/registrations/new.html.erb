@@ -1,0 +1,40 @@
+
+<div class="row">
+  <div class="col-md-7">
+    <h2 style="color:#9B5C32;font-weight:300">Registrazione</h2>
+    <div class="box">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <div class="form-group">
+           <%= f.text_field :first_name, autofocus: true, placeholder: 'Nome', class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+           <%= f.text_field :last_name, placeholder: 'Cognome', class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+           <%= f.email_field :email, placeholder: 'Email', class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+          <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: 'Password (8 caratteri minimo)' %>
+        </div>
+
+        <div class="actions text-right" style="margin-top:30px ">
+          <%= f.submit "Registrati", class: 'btn' %>
+        </div>
+      <% end %>
+    </div>
+    <br>
+    <p style="font-size: 18px">sei già registrato?  <%= link_to "clicca qui" ,new_admin_session_path %></p>
+    <br>
+    <% flash.each do |name, msg| -%>
+      <% if not msg.blank? %>
+        <%= content_tag :div, class: "#{flash_class(name.to_s)} alert-dismissible" do -%>
+          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <%= raw(msg) %>
+        <% end %>
+      <% end %>
+    <% end -%>
+  </div>
+</div>

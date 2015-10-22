@@ -1,0 +1,6 @@
+$('.list-table').append('<%= escape_javascript(render(:partial => "events",:locals => {:@events => @events}))%>');
+
+<% if @stop_loading %>
+	window.finished = true;
+	$('#loadmore').hide();
+<% end %>

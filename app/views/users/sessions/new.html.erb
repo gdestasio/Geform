@@ -1,0 +1,86 @@
+
+<div class=" text-center loginscreen animated fadeInDown">
+  <div>
+      <div>
+          <h1 class="logo-name">GeForm</h1>
+      </div>
+      <h3>Benvenuto</h3>      
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <div class="form-group" style="width:350px;margin:10px auto 10px auto">
+               <%= f.email_field :email, autofocus: true, class: 'form-control', placeholder: "Email" %>
+          </div>
+          <div class="form-group" style="width:350px;margin:10px auto 10px auto">
+              <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Password",style: "width:350px;"  %>
+          </div>
+          <%= f.submit "Log in", class: 'btn btn-primary btn-block full-width m-b',style: "width:350px;margin:10px auto 10px auto" %>
+      <% end %>
+      <p style=>non sei ancora registrato?  <%= link_to "clicca qui" ,new_user_registration_path %></p>
+      <%= link_to new_password_path(resource_name), data: { no_turbolink: true }, class: 'need-help' do %> Password dimenticata? <% end %>            
+  </div>
+  <br><br>
+  
+  <div class="row">
+     <div class="col-md-6">
+      <div class="first" style=" float:right;"><%= image_tag asset_path("loghi/odafg.png"), width: '200px'  %></div>              
+    </div>
+    <div class="col-md-6">
+      <div class="second" style=" float:left;"><%= image_tag asset_path("loghi/cinfor.png"), width: '300px'  %></div>                  
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $("#new_admin").validate({
+      rules: {
+        "admin[email]": {required: true, email: true },
+        "admin[password]": {required: true, minlength: 8}
+      }
+  });
+</script>
+
+<style type="text/css">
+  .footer .container{
+    line-height: 20px !important;
+  }
+</style>
+
+
+
+<!--
+<div class="row">
+  <div class="col-md-6 signinup">
+    <h2 style="color:#9B5C32;font-weight:300">Accedi</h2>
+      <div class="box" style="padding-top: 30px">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="form-group">
+          <%= f.email_field :email, autofocus: true, class: 'form-control', placeholder: "Email" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Password"  %>
+        </div>
+
+        <div class="text-right">
+           <% if devise_mapping.rememberable? -%>
+            <div class="field pull-left">
+              <%= f.check_box :remember_me %>
+              <label>ricordami</label>
+            </div>
+          <% end -%>
+          <%= f.submit "Log in", class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+      </div>
+       <%= link_to new_password_path(resource_name), data: { no_turbolink: true }, class: 'pull-right need-help' do %> Aiuto? <% end %>
+      <p style="font-size: 18px">non sei ancora registrato?  <%= link_to "clicca qui" ,new_user_registration_path %></p>
+  </div>
+</div>
+
+<script type="text/javascript">
+    $("#new_user").validate({
+        rules: {
+          "user[email]": {required: true, email: true },
+          "user[password]": {required: true, minlength: 8}
+        }
+    });
+</script>-->

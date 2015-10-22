@@ -1,0 +1,238 @@
+
+<!-- Modal -->
+<div class="modal fade" id="join-event-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Sei Sicuro?</h4>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler partecipare all'evento <strong><%= @event.name %></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <%= link_to "Si",users_events_join_path, class: 'btn btn-danger', method: :post %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="revoke-event-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Sei Sicuro?</h4>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler revocare la partecipazione all'evento <strong><%= @event.name %></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <%= link_to "Si",users_events_revoke_path, class: 'btn btn-danger', method: :post %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="add-wl-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Sei Sicuro?</h4>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di vole essere aggiunto alla lista di attesa  dell'evento <strong><%= @event.name %></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <%= link_to "Si",users_events_add_wl_path, class: 'btn btn-danger', method: :post %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="remove-wl-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Sei Sicuro?</h4>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler essere rimosso dalla lista di attesa dell'evento <strong><%= @event.name %></strong> e di conseguenza perdere la posizione guadagnata ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <%= link_to "Si",users_events_remove_wl_path, class: 'btn btn-danger', method: :post %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @event.cancellato? %>
+  <div class="alert alert-danger alert-static" role="alert">
+      <h4 id="oh-snap!-you-got-an-error!">Evento Cancellato!<a class="anchorjs-link" href="#oh-snap!-you-got-an-error!"><span class="anchorjs-icon"></span></a></h4>
+      <p>Spiacenti ma l'evento <strong><%= @event.name %></strong> è stato cancellato per i seguenti motivi: </p>
+  </div>
+<% else %>
+  <% if @event.subscriptions.size >= @event.seats and @waiting_lists.empty? and @subscriptions.empty?%>
+  	<div class="alert alert-danger alert-static" role="alert">
+      <h4 id="oh-snap!-you-got-an-error!">Posti non disponibili!<a class="anchorjs-link" href="#oh-snap!-you-got-an-error!"><span class="anchorjs-icon"></span></a></h4>
+      <p>Spiacenti ma i posti disponibili per questo evento sono esauriti. Se vuoi, cliccando sul tasto "Aggiungimi alla lista", verrai iscritto come riserva in modo da essere avvisato in caso di disponiilità</p>
+    </div>
+  <% end %>
+
+  <%if not @waiting_lists.empty?%>
+    <% position = 0
+      WaitingList.where(event_id: @event.id).each_with_index do |wl, index|
+        if current_user == wl.user
+          position = index + 1
+        end
+      end
+    %>
+    <div class="alert alert-danger alert-static" role="alert">
+      <h4 id="oh-snap!-you-got-an-error!">Sei in lista!<a class="anchorjs-link" href="#oh-snap!-you-got-an-error!"><span class="anchorjs-icon"></span></a></h4>
+      <p>Sei stato aggiunto in lista in <strong>posizione <%= position %></strong> per questo evento data la mancanza di posti disponibili. Ne momento in cui si dovessero liberare posti o l'organizzazione decidesse di aggiungerne altri verrai informato via email.</p>
+    </div>
+  <% end %>
+<% end %>
+
+<% if params[:home] %>
+	<%= link_to "Indietro", users_path, class: 'btn btn-default' %>
+<% else %>
+	<%= link_to "Indietro", users_events_path, class: 'btn btn-default' %>
+<% end %>
+
+
+<% if not @event.cancellato? and not @event.scaduto?%>
+  <% if @event.closing_at.nil? or @event.closing_at >= Time.now %>
+    <a title="Add to Calendar" class="addthisevent btn btn-default">
+        <i class="fa fa-calendar-o fa-fw"></i> Aggiungi al Calendario
+        <span class="start"><%= @event.start_at.strftime("%d/%m/%Y %H:%M %p")%></span>
+        <span class="end"><%= @event.end_at.strftime("%d/%m/%Y %H:%M %p")%></span>
+        <span class="timezone">Europe/Rome</span>
+        <span class="title"><%= @event.name %></span>
+        <span class="description"><%= @event.description %></span>
+        <span class="location"><%= @event.location %></span>
+        <span class="organizer">Organizer</span>
+        <span class="organizer_email">Organizer e-mail</span>
+        <span class="facebook_event"></span>
+        <span class="all_day_event">false</span>
+        <span class="date_format">DD/MM/YYYY</span>
+    </a>
+  <% end %>
+<% end %>
+
+<% if not @event.cancellato? and not @event.scaduto?%>
+  <% if @event.closing_at.nil? or @event.closing_at >= Time.now %>
+    <% if @subscriptions.empty? and  @waiting_lists.empty?%>
+    	<% if @event.subscriptions.size >= @event.seats %>
+    		<a href="" class="btn btn-warning pull-right" id="add-wl"><i class="fa fa-list fa-fw"></i>Aggiungimi alla lista</a>
+    	<% else %>
+    		<a href="" class="btn btn-primary pull-right" id="join-event"><i class="fa fa-check fa-fw"></i>Partecipa</a>
+    	<% end %>
+    <% else %>
+    	<% if not @waiting_lists.empty? %>
+    		<a href="" class="btn btn-danger pull-right" id="remove-wl"><i class="fa fa-times fa-fw"></i>Rimuovimi dalla lista</a>
+    	<% else %>
+    		<a href="" class="btn btn-danger pull-right" id="revoke-event"><i class="fa fa-times fa-fw"></i>Revoca Partecipazione</a>
+    	<% end %>
+    <% end %>
+  <% else %>
+    <a href="" class="btn btn-default pull-right disabled"><i class="fa fa-lock fa-fw"></i>Prenotazioni Chiuse</a>
+  <% end %>
+<% end %>
+
+<br><br>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">
+			<h1 class="oda-color"><%= @event.name.capitalize %></h1>
+			<% if @event.proponent_id %>
+        <p>L'evento proposto dall'associazione <strong><%= @event.proponent.name %></strong> si terrà in data <strong><%= @event.date %></strong> presso <strong><%= @event.location %></strong> sito in <strong><%= @event.longaddress %>.</strong></p>
+      <% else %>
+        <p>L'evento si terrà in data <strong><%= @event.date %></strong> presso <strong><%= @event.location %></strong> sito in <strong><%= @event.longaddress %>.</strong></p>
+      <% end %>
+			<br>
+			<p class="text-justify"><%= @event.description %></p>
+			<br>
+      <p style="text-align:center">
+        <% if @event.brochure.blank? %>
+            Nessuna brochure caricata
+        <% else %>
+            <%= link_to admins_events_download_brochure_path(event_id: @event.id),title: 'Dettagli', class: 'btn btn-sm btn-info' do %><i class="fa fa-eye"></i> Scarica brochure<% end %>        
+        <% end %>            
+      </p>
+      <br />
+			<div class="row">
+				<div class="col-md-12">			
+					<button type="button" class="btn btn-w-m btn-success disabled"><strong>stato</strong> <%= @event.status %></button>                      
+              <button type="button" class="btn btn-w-m btn-success disabled"><strong>crediti:</strong> <%= @event.credits %></button>
+              <button type="button" class="btn btn-w-m btn-success disabled"><strong>cat.:</strong> <%= @event.category %></button>
+              <button type="button" class="btn btn-w-m btn-success disabled"><strong>posti:</strong> <%= @event.seats %></button>
+              <button type="button" class="btn btn-w-m btn-success disabled"><strong>prenotati:</strong> <%= @event.subscriptions.size %></button>
+				</div>
+			</div>
+      <% if @event.closing_at %>
+        <% if @event.closing_at >= Time.now%>
+          <br>
+          <p><span style="color: #c00">ATTENZIONE:</span> le prenotazioni chiudono il <strong><%= @event.closing_at.strftime("%d/%m/%Y") %></strong> alle <strong><%= @event.closing_at.strftime("%H:%M") %></strong></p>
+        <% else %>
+          <br>
+          <p><span style="color: #c00">ATTENZIONE:</span> le prenotazioni sono chiuse.</p>
+        <% end %>
+      <% end %>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="box">
+      <span><%= @event.location %></span>, <span><%= @event.longaddress %></span><br><br>
+			<iframe src="http://maps.google.com/?q=<%= @event.longaddress %>&amp;output=embed" width="100%" height="300px" frameborder="0" style="border:0"></iframe>
+		</div>
+		<p>Hai domande sull'evento <strong><%=@event.name %></strong>? <a href="mailto:info@ordineavvocatifoggia.it">Contattaci</a></p>
+	</div>
+  <% if not @event.speakers.empty? %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <span><strong>relatori:</strong> <%= @event.speakers.map(&:name).join(",")%></span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+	$('.nav > li').removeClass('active');
+  $('#events').addClass('active');   
+
+  $('#join-event').click(function(e){
+  	e.preventDefault();
+  	$('#join-event-modal').modal('show');
+  	return true;
+  });
+
+  $('#revoke-event').click(function(e){
+  	e.preventDefault();
+  	$('#revoke-event-modal').modal('show');
+  	return true;
+  });
+
+  $('#add-wl').click(function(e){
+  	e.preventDefault();
+  	$('#add-wl-modal').modal('show');
+  	return true;
+  });
+
+  $('#remove-wl').click(function(e){
+  	e.preventDefault();
+  	$('#remove-wl-modal').modal('show');
+  	return true;
+  });
+</script>

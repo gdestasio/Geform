@@ -1,0 +1,64 @@
+
+<div class="row">
+	<div class="col-md-12 col-md-offset-0">
+		<h3 class="oda-color">Dettagli Evento</h3><br>
+		<%= form_for :generator , :html => {:multipart => true, :id => "generate_event"} ,:url => url_for(controller: 'admins/events', action: 'generate') do |f| %>
+			<div class="form-group">
+				<div class="controls">
+					<%= f.text_field :name, :autofocus => true, class: 'form-control no-border-radius', placeholder: 'Nome Evento', required: true %>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="controls">
+				  <%= select_tag "generator[typology]", options_for_select([ "Aggiornamento", "Formazione" ]), {include_blank: 'Seleziona la tipologia', class: 'form-control no-border-radius', required: true} %>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="controls">
+				  <%= select_tag "generator[duration]", options_for_select([ "Mezza Giornata", "Giornata Intera" ]), {include_blank: 'Seleziona la durata', class: 'form-control no-border-radius', required: true} %>
+				</div>
+			</div>
+			
+			<br>
+
+			<h3 class="oda-color">Criteri</h3><br>
+			<div class="row">
+				<% Criterium.all.each_with_index do |c, index|%>
+					<div class="col-md-12">
+						<div class="ibox">
+						<span style="color: #c66"><%= index + 1 %></span> <span style="color: #072439"><%= c.name %></span>
+						<br>
+						<br>
+						  <% c.options.each do |option| %>
+								<span><%= radio_button("generator[options]", "#{c.id}", "#{option.name}") %> <%= option.name %></span><br>
+							<% end %>
+						</div>
+					 
+					</div>
+				<% end %>
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+						<%= f.submit "Calcola", class: 'btn btn-danger btn-block btn-lg' %>
+				</div>
+			</div>
+			
+		<% end %>
+	</div>
+</div>
+
+						
+<%= javascript_tag do -%>
+	$("#generate_event").validate({
+    rules: {
+      "generator[name]": {required: true }
+    }
+  });
+<% end %>
+
+<script type="text/javascript">
+	  $('.menu').removeClass('active');
+    $('#events').addClass('active');
+</script>

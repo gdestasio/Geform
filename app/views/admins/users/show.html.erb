@@ -1,0 +1,111 @@
+<div class="row">
+<h3 style="text-align:center;"><%=@training_plan.description%></h3>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-6">        
+        <div class="ibox">          
+            <div class="form-group">
+              <label for="name">Stato di iscrizione:</label> <strong><span style="color: <%=@user.status_color%>"><%=@user.status_des %></span></strong>
+          </div>
+
+          <div class="form-group">
+              <label for="name">Nome:</label> <span><%=@user.name %></span>            
+          </div>
+
+          <div class="form-group">
+              <label for="name">Codice Tessera:</label> <span><%=@user.card_number%></span>            
+          </div>
+          
+
+          <div class="form-group">
+              <label for="name">Codice Fiscale:</label> <span><%=@user.taxcode %></span>           
+          </div>
+
+          <div class="form-group">
+              <label for="name">Email:</label> <span><%=@user.email%></span>           
+          </div>
+
+          <div class="form-group">
+              <label for="name">PEC:</label> <span><%=@user.pec%></span>
+          </div>
+
+          <div class="form-group">
+              <label for="name">Indirizzo residenza:</label> <span><%=@user.extended_address %></span>           
+          </div>     
+          <div class="form-group">
+              <label for="name">Indirizzo studio:</label> <span><%=@user.extended_delivery_1_address %></span>           
+          </div>        
+
+          <div class="form-group">
+              <label for="name">Data di Nascita:</label> <span><%=@user.birthdate.try("strftime","%d-%m-%Y") %></span>
+          </div>
+
+          <div class="form-group">
+              <label for="name">Data Iscrizione Albo:</label> <span><%=@user.albo_subscription_at.try("strftime","%d-%m-%Y") %></span>             
+          </div> 
+
+          <div class="form-group">
+              <label for="name">Recapito telefonico:</label> <span><%=@user.phone %></span>             
+          </div>  
+
+          <div class="form-group">
+              <label for="name">Telefono - Fax (studio):</label> <span><%=@user.delivery_1_phone %> - <%=@user.delivery_1_fax %></span>             
+          </div>                            
+          <br>                        
+      </div>
+  </div>
+  <div class="col-md-6">        
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Eventi</h5>
+        </div>
+        <div class="ibox-content">
+            <h1 class="no-margins"><%= @subscriptions.size %></h1>
+            <small>eventi ai quali è iscritto</small>
+        </div>        
+    </div>    
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h5>Crediti</h5>
+                </div>
+                <div class="col-lg-6">
+                    <h5>di cui</h5>
+                </div>       
+            </div>         
+        </div>
+        <div class="ibox-content">            
+            <div class="row">  
+                <div class="col-lg-6">
+                    <h1 class="no-margins"><%= @tot_credits %></h1>                              
+                    <small>crediti totali acquisiti</small>                     
+                </div>
+                <div class="col-lg-6">
+                 <!-- "ordinamento" => 0, "previdenza / assistenza" => 1, "deontologia" => 2, "altro" => 3 -->                        
+                 <small>ordinamento</small> <%= @tot_credits_cat_0 %><br>
+                 <small>previdenza / assistenza</small> <%= @tot_credits_cat_1 %><br>
+                 <small>deontologia</small> <%= @tot_credits_cat_2 %><br>
+                 <small>altro</small> <%= @tot_credits_cat_3 %><br>
+             </div>
+         </div>
+     </div>
+ </div>
+
+ <div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>Transiti</h5>
+    </div>
+    <div class="ibox-content">
+        <h1 class="no-margins"><%= @transits.size %></h1>
+        <small>numero di transiti effettuati</small>
+    </div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+ $('.nav > li').removeClass('active');
+ $('#users').addClass('active');
+</script>

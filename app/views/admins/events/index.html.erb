@@ -1,0 +1,127 @@
+ <script>
+    $(function() {
+      var availableTags = [
+        <%=raw @events_available.to_s.gsub("[","").gsub("]","").gsub("=>",":")%>
+      ];
+      $( "#search-event" ).autocomplete({
+         minLength: 2,
+         select: function( event, ui ) {
+            $(this).val(ui.item.label);
+            window.location.href="/admins/events/" + ui.item.value + "/show/";
+            return false;
+          },
+          focus: function() {
+            // prevent value inserted on focus
+            return false;
+          },
+
+        source: availableTags
+      }).data("ui-autocomplete")._renderItem = function (ul, item) {
+         return $("<li></li>")
+             .data("item.autocomplete", item)
+             .append("<a>" + item.label + "</a>")
+             .appendTo(ul);
+      };
+      $( "#search-event" ).autocomplete( "option", "appendTo", "#form-search-event" );
+    });
+
+    $('.modal').on('shown.bs.modal', function() {
+      $(this).find('[autofocus]').focus();
+    });
+  </script>
+<div class="row">
+<div class="col-md-12">
+   <ul class="nav nav-pills">
+      <li class="<%= (params[:status].nil? or params[:status].blank?) ? 'active' : '' %>"><a href="#">Tutti</a></li>
+      <li class="<%= (params[:status]=='0') ? 'active' : '' %>"><a href="/admins/events?status=0">Creati</a></li>
+      <li class="<%= (params[:status]=='3') ? 'active' : '' %>"><a href="/admins/events?status=3">Proposti</a></li>
+      <li class="<%= (params[:status]=='1') ? 'active' : '' %>"><a href="/admins/events?status=1">Schedulati</a></li>
+      <li class="<%= (params[:status]=='5') ? 'active' : '' %>"><a href="/admins/events?status=5">Scaduti</a></li>      
+      <li class="<%= (params[:status]=='4') ? 'active' : '' %>"><a href="/admins/events?status=4">Chiusi</a></li>      
+      <li class="<%= (params[:status]=='2') ? 'active' : '' %>"><a href="/admins/events?status=2">Cancellati</a></li>      
+    </ul>
+  </div>
+</div>
+<br>
+<%if params[:status]=='0' %>
+<strong>In questa sezione sono presenti tutti gli eventi creati e non ancora schedulati. Per pubblicare l'evento entrare nel dettaglio e cliccare sul pulsante "Schedula".</strong>
+<%elsif params[:status]=='1' %>
+<strong>In questa sezione sono presenti tutti gli eventi schedulati e pubblicati.</strong>
+<%elsif params[:status]=='2' %>
+<strong>In questa sezione sono presenti tutti gli eventi annullati.</strong>
+<%elsif params[:status]=='3' %>
+<strong>In questa sezione sono presenti tutti gli eventi proposti da associazioni o categorie esterne. Per confermare l'evento entrare nel dettaglio e cliccare sul pulsante "Accetta evento".</strong>
+<%elsif params[:status]=='4' %>
+<strong>In questa sezione sono presenti tutti gli eventi conclusi con scarico di tutte le presenze e ricalcolo dei crediti formativi maturati.</strong>
+<%elsif params[:status]=='5' %>
+<strong>In questa sezione sono presenti tutti gli eventi con prenotazioni chiuse.</strong>
+<%end%>
+<br><br>
+<!-- Modal -->
+<div class="modal fade" id="search-event-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:700px">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Ricerca Evento</h4>
+      </div>
+      <div class="modal-body">
+        <div id="form-search-event">
+            <input class="form-control" id="search-event" autofocus placeholder="cerca per nome, data o location">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% if @events.empty? %>
+	<div class="ef">
+	  <i class="fa fa-list fa-4x"></i><br>
+	  <p>Non sono presenti <strong>eventi</strong> al momento</p>
+	</div>
+<% else %>
+  <% if params[:query] %>
+      <p>La ricerca <strong><%= params[:query] %></strong> ha prodotto i seguenti risultati: <a class="pull-right" style="color:red" href="/admins/events"><i class="fa fa-times"></i></a></p>
+  <% end %>
+	<div class="list-table">
+    <%= render :partial => 'events'%>   
+  </div>
+
+  <% if @pagination and  @events.total_entries > WillPaginate.per_page %>
+  	<div id="loadmore">
+  		<a>visualizza più eventi</a>
+  	</div>
+  <% end %>
+<% end %>
+
+<script type="text/javascript">
+	  $('.menu').removeClass('active');
+    $('#events').addClass('active');
+</script>
+
+
+<% if not params[:query]%>
+  <script type="text/javascript">
+
+    window.finished = false;
+    var page = 1;
+
+    $('#loadmore').click(function(e) {
+      e.preventDefault();
+      page++;
+      var request= $.ajax({
+        url: "/admins/events/loadmore?page=" + page,
+        type: 'get',
+        dataType: 'script'
+      });
+    });
+
+    $('#search-event').keyup(function(e) {
+      if(e.which == 13) {
+        var query = $(this).val();
+        window.location.href="/admins/events?query=" + query;
+      }
+    });
+  </script>
+<% end %>

@@ -1,0 +1,165 @@
+<script type="text/javascript">
+  $(function() {
+    var availableTags = [
+      <%=raw @cities.to_s.gsub("[","").gsub("]","").gsub("=>",":")%>
+    ];
+    $( "#user_delivery_1_city_id" ).autocomplete({
+        minLength: 2,
+        change: function(event,ui){          
+          $(this).val((ui.item ? ui.item.label : ""));
+        },
+
+        select: function( event, ui ) {
+             $(this).val(ui.item.label);
+             console.log(ui.item);
+             return false;
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+
+      source: availableTags
+    });
+  });
+</script>
+
+<h4>Dati anagrafici</h4>
+<hr>
+<div class="form-group">
+  <div class="controls">
+      <label for="" class="flabel">Titolo <sup>*</sup></label>
+      <%= select("user", "title", User.titles.collect  { |t| [t[0].humanize, t[0]] }, {include_blank: 'seleziona il titolo...', selected: @user.title}, class: 'required form-control  no-border-radius') %>
+   </div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Nome <sup>*</sup></label>
+		<%= f.text_field :first_name, class: 'form-control  no-border-radius', placeholder: 'Nome' , required: true, autofocus: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Cognome <sup>*</sup></label>
+		<%= f.text_field :last_name, class: 'form-control  no-border-radius', placeholder: 'Cognome' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">N. tessera</label>
+		<%= f.text_field :card_number, class: 'form-control  no-border-radius number', placeholder: 'Numero Tessera' %>
+	</div>
+</div>
+
+<div class="form-group">
+  <div class="controls">
+    <label for="" class="flabel">Data di nascita <sup>*</sup></label>
+    <%= f.text_field :birthdate, class: 'required datepicker form-control no-border-radius dateFormat', placeholder: 'Data di nascita', :value => @user.birthdate.try("strftime","%d-%m-%Y") %>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="controls">
+    <label for="" class="flabel">Data di iscrizione all'Albo <sup>*</sup></label>
+    <%= f.text_field :albo_subscription_at, class: 'required datepicker form-control no-border-radius dateFormat', placeholder: 'Data di iscrizione all\'albo', :value => @user.albo_subscription_at.try("strftime","%d-%m-%Y") %>
+  </div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Codice Fiscale <sup>*</sup></label>
+		<%= f.text_field :taxcode, class: 'form-control  no-border-radius', placeholder: 'Codice Fiscale' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Email <sup>*</sup></label>
+		<%= f.email_field :email, class: 'form-control  no-border-radius', placeholder: 'Email' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">PEC <sup>*</sup></label>
+		<%= f.email_field :pec, class: 'form-control  no-border-radius', placeholder: 'Pec' , required: true %>
+	</div>
+</div>
+
+<br><br>
+<h3>Recapito studio</h3>
+<hr>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Indirizzo <sup>*</sup></label>
+		<%= f.text_field :delivery_1_address, class: 'form-control  no-border-radius', placeholder: 'Indirizzo' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Città <sup>*</sup></label>
+		<%= f.text_field :delivery_1_city_id, class: 'form-control  no-border-radius', placeholder: 'Città' , required: true, value: "#{@user.delivery_1_city_id ? City.find(@user.delivery_1_city_id).name : ''}" %>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">CAP <sup>*</sup></label>
+		<%= f.text_field :delivery_1_zip, class: 'number form-control  no-border-radius', placeholder: 'Cap' , required: true %>
+	</div>
+</div>
+
+<div class="form-group">
+  <div class="controls">
+    <label for="" class="flabel">Telefono <sup>*</sup></label>
+    <%= f.text_field :delivery_1_phone, class: 'form-control  no-border-radius number', placeholder: 'Telefono' , required: true %>
+  </div>
+</div>
+
+<div class="form-group">
+	<div class="controls">
+    <label for="" class="flabel">Nazione <sup>*</sup></label>
+		<%= f.collection_select(:delivery_1_country_id, Country.all, :id, :name, {:include_blank => 'seleziona nazione...'}, {:class => 'required form-control  no-border-radius'}) %>
+	</div>
+</div>
+
+<%= javascript_tag do -%>
+	$.validator.addMethod("taxcodeRegex", function(value, element) {
+    return this.optional(element) || /^[a-zA-Z0-9]*$/.test(value);
+  }, "I caratteri validi sono le lettere e le cifre");
+
+	$("#update_user").validate({
+    rules: {
+      "user[first_name]": { required: true },
+      "user[last_name]": { required: true },
+      "user[taxcode]": {required: true,  maxlength: 16,  minlength: 16,  taxcodeRegex: true },
+    }
+  });
+
+  $("#new_user").validate({
+    rules: {
+      "user[first_name]": { required: true },
+      "user[last_name]": { required: true },
+      "user[taxcode]": {required: true,  maxlength: 16,  minlength: 16,  taxcodeRegex: true },
+    }
+  });
+  
+  $('.nav > li').removeClass('active');
+  $('#users').addClass('active');   
+
+  $(function() { $(".datepicker").datepicker({
+    maxDate: '0',
+    changeMonth: true,
+    changeYear: true ,
+    yearRange: "-90:+0",
+    onSelect: function(dateText, inst) {
+      $(this).blur().change();
+    }
+    });
+  });
+<% end %>

@@ -1,0 +1,199 @@
+<% if @user.active? %>
+    <%= render partial: "profile" %>
+<% else %>
+    
+  <% if @user.confirmed_at.nil?%>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="page-action-box">
+          <span class="page-action-title">Gentile <strong><%= @user.name %></strong></span>
+        </div>
+
+        <div class="box">
+         <p class="text-justify">Per proseguire con la registrazione deve confermare l'indirizzo email <strong><%= @user.email %></strong> tramite l'apposito link presente nella stessa. Se non ha ancora ricevuto la mail controlli nello SPAM.</p>
+         <br><br>
+         <p class="text-right">La Segreteria Organizzativa</p>
+         <br>
+        <%= link_to "Torna al Sito", destroy_user_session_path, class: 'btn btn-secondary' %>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="page-action-box">
+          <span class="page-action-title">Benvenuto <strong><%= @user.name %></strong> - Completa la tua iscrizione</span>
+        </div>
+ 
+        <%= form_for @user, :html => {:multipart => true, :id => "activate_user" , :class => "form-horizontal"} ,:url => user_activate_path do |f| %>
+            <div class="box">
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label for="">Titolo <sup>*</sup></label>
+                  <%= select("user", "title", User.titles.collect  { |t| [t[0].humanize, t[0]] }, {include_blank: 'seleziona il titolo...', selected: @user.title}, class: 'required form-control') %>
+                 </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Pec <sup>*</sup></label>
+                  <%= f.email_field :pec, class: 'form-control', placeholder: 'Pec' , required: true %>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Data Iscrizione Albo <sup>*</sup></label>
+                  <%= f.text_field :albo_subscription_at, class: 'form-control datepicker dateFormat', placeholder: 'Data Iscrizione Albo' , required: true, :value => @user.albo_subscription_at.try("strftime","%d-%m-%Y") %>
+                </div>
+              </div>
+            </div>
+            <h3>Residenza</h3>
+            <div class="box">
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Indirizzo <sup>*</sup></label>
+                  <%= f.text_field :address, class: 'form-control', placeholder: 'Indirizzo' , required: true %>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Città  <sup>*</sup></label>
+                  <%= f.text_field :city_id, class: 'form-control', placeholder: 'Città' , required: true, value: "#{@user.city ? @user.city.name : ''}" %>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>CAP  <sup>*</sup></label>
+                  <%= f.text_field :zip, class: 'form-control number', placeholder: 'Cap' , required: true %>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Nazione  <sup>*</sup></label>
+                  <%= f.collection_select(:country_id, Country.all, :id, :name, {:include_blank => 'seleziona nazione...'}, {:class => 'form-control required'}) %>
+                </div>
+              </div>
+        
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Telefono Cellulare<sup>*</sup></label>
+                  <%= f.text_field :phone, class: 'form-control', placeholder: 'Telefono Cellulare' , required: true %>
+                </div>
+              </div>
+            </div>
+            <h3>Studio</h3>
+             <div class="box">
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Indirizzo <sup>*</sup></label>
+                  <%= f.text_field :delivery_1_address, class: 'form-control', placeholder: 'Indirizzo' , required: true %>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Città <sup>*</sup></label>
+                  <%= f.text_field :delivery_1_city_id, class: 'form-control', placeholder: 'Città' , required: true, value: "#{@user.delivery_1_city_id ? City.find(@user.delivery_1_city_id).name : ''}" %>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>CAP <sup>*</sup></label>
+                  <%= f.text_field :delivery_1_zip, class: 'form-control number', placeholder: 'Cap' , required: true %>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Nazione <sup>*</sup></label>
+                   <%= f.collection_select(:delivery_1_country_id, Country.all, :id, :name, {:include_blank => 'seleziona nazione...'}, {:class => 'form-control required'}) %>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <label>Numero di telefono<sup>*</sup></label>
+                  <%= f.text_field :delivery_1_phone, class: 'form-control number', placeholder: 'Numero di telefono' , required: true %>
+                </div>
+              </div>
+            </div>
+            <div class="actions text-right" style="margin-top: 20px ">
+              <%= link_to "Annulla", destroy_user_session_path, class: 'btn' %>
+              <%= f.submit "Completa", class: 'btn btn-danger' %>
+            </div>
+          <% end %>
+        </div>
+    </div>
+  <% end %>
+<% end %>
+
+<script type="text/javascript">
+  $(function() {
+    var availableTags = [
+      <%=raw @cities.to_s.gsub("[","").gsub("]","").gsub("=>",":")%>
+    ];
+    $( "#user_city_id" ).autocomplete({
+        minLength: 2,
+        change: function(event,ui){
+          $(this).val((ui.item ? ui.item.label : ""));
+        },
+        
+        select: function( event, ui ) {
+             $(this).val(ui.item.label);
+             return false;
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+
+      source: availableTags
+    });
+  });
+
+  $(function() {
+    var availableTags = [
+      <%=raw @cities.to_s.gsub("[","").gsub("]","").gsub("=>",":")%>
+    ];
+    $( "#user_delivery_1_city_id" ).autocomplete({
+        minLength: 2,
+        change: function(event,ui){
+          $(this).val((ui.item ? ui.item.label : ""));
+        },
+
+        select: function( event, ui ) {
+             $(this).val(ui.item.label);
+             return false;
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+
+      source: availableTags
+    });
+  });
+</script>
+
+<%= javascript_tag do -%>
+  $("#activate_user").validate({
+    rules: {
+      "user[pec]": { required: true },
+      "user[cell]": { required: true }
+    }
+  });
+
+  $(function() { $(".datepicker").datepicker({
+    maxDate: '0',
+    changeMonth: true,
+    changeYear: true ,
+    yearRange: "-90:+0",
+    onSelect: function(dateText, inst) {
+      $(this).blur().change();
+    }
+    });
+  });
+<% end %>

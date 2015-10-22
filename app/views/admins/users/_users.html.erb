@@ -1,0 +1,19 @@
+<div class="row">
+  <% @users.each do |user|%>
+    <div class="col-md-4 animated fadeIn">
+      <%= link_to admins_users_show_path(id: user.id) do %>
+        <div class="ibox">
+          <h3><%= user.name %></h3>
+          <span><%= user.email %></span><br>
+          <div class="info">
+            <span class="badge badge-info">eventi <%= user.subscriptions.size %></span>
+          </div>
+          <div class="status">
+            <span class="badge badge-plain"><%= user.taxcode.upcase%></span>
+            <span class="badge badge-plain" style="background-color:<%=user.status_color=%>;color:white;"><%= user.status_des%></span>            
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

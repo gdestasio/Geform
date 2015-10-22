@@ -1,0 +1,90 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    
+                                <!-- Controllo visualizzazione menù laterale -->
+                                <% if user_signed_in? %>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                        <span class="clear">
+                                            <span class="block m-t-xs">
+                                                <strong class="font-bold"><% user_signed_in.first_name + user_signed_in.last_name %></strong>
+                                            </span> 
+                                            <span class="text-muted text-xs block">Menu utente <b class="caret"></b></span>
+                                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                                <li><a href="#">Logout</a></li>
+                                            </ul>
+                                        </span>
+                                    </a>
+
+                                <% elsif admin_signed_in? %>
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                        <span class="clear">
+                                            <span class="block m-t-xs">
+                                                <strong class="font-bold"><% user_signed_in.first_name + user_signed_in.last_name %></strong>
+                                            </span> 
+                                            <span class="text-muted text-xs block">Menu utente <b class="caret"></b></span>
+                                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                                <li><a href="#">Logout</a></li>
+                                            </ul>
+                                        </span>
+                                    </a>
+                                <% else %>
+                                    <!-- Nulla da fare -->
+                                <% end %>
+                    
+                </div>
+                <div class="logo-element">
+                    GF+
+                </div>
+            </li>
+            <li class="<%= 'active' if current_page?('/') %>">
+                <%= link_to "/" do %>
+                <i class="fa fa-home"></i> <span class="nav-label">Home</span>
+                <% end %>
+            </li>
+            <li class="<%= 'active' if current_page?('/users/documents') %>">                
+                <%= link_to "/users/documents" do %>
+                <i class="fa fa-book"></i> <span class="nav-label">Documenti</span>
+                <% end %>
+            </li>
+
+
+            
+
+
+            <% if user_signed_in? %>
+                <li class="">
+                    <%= link_to "/" do %>
+                        <i class="fa fa-sign-out"></i> <span class="nav-label">Logout</span>
+                    <% end %>
+                </li>            
+            <% elsif %>
+                <% if user_signed_in? %>
+                    <li class="">
+                        <%= link_to "#" do %>
+                            <i class="fa fa-sign-out"></i> <span class="nav-label">Logout</span>
+                        <% end %>
+                    </li>
+                <% else %>
+                    <li class="">
+                        <%= link_to "#" do %>
+                            <i class="fa fa-sign-in"></i> <span class="nav-label">Login</span>
+                        <% end %>
+                    </li>
+                    <li class="">
+                        <%= link_to "#" do %>
+                            <i class="fa fa fa-user"></i> <span class="nav-label">Registrati</span>
+                        <% end %>
+                    </li>
+                <% end %>
+            <% else %>
+            <!-- Nulla da fare -->
+            <% end %>
+
+            
+        </ul>
+
+    </div>
+</nav>

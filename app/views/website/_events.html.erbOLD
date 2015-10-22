@@ -1,0 +1,43 @@
+<% @events.each do |event|%>
+    <div class="col-md-6">
+      <% if not user_signed_in? %>
+      <%= link_to website_events_show_path(id: event.id) do %>
+      <div class="ibox">
+          <div class="row">
+            <div class="col-md-12">
+              <h3><%= event.name %></h3>
+              <span><%= event.date %></span><br>
+              <span><%= event.location %></span><br>
+              <span><%= event.address %> - <%= event.city %></span><br>                
+            </div>
+          </div>
+          <div class="row">
+            <div class="info">
+              <span class="badge badge-plain">iscritti <%= event.subscriptions.size %></span>            
+              <span class="badge badge-plain">in lista <%= event.waiting_lists.size %></span>
+            </div>          
+          </div>
+        </div>
+      <% end %>
+      <%else%>
+      <%= link_to users_events_show_path(id: event.id) do %>
+      <div class="ibox">
+          <div class="row">
+            <div class="col-md-12">
+              <h3><%= event.name %></h3>
+              <span><%= event.date %></span><br>
+              <span><%= event.location %></span><br>
+              <span><%= event.address %> - <%= event.city %></span><br>                
+            </div>
+          </div>
+          <div class="row">
+            <div class="info">
+              <span class="badge badge-plain">iscritti <%= event.subscriptions.size %></span>            
+              <span class="badge badge-plain">in lista <%= event.waiting_lists.size %></span>
+            </div>          
+          </div>
+        </div>
+      <% end %>
+      <%end%>        
+    </div>
+  <% end %>

@@ -1,0 +1,33 @@
+<div class="row">
+	<% @events.each do |event| %>
+		<div class="col-md-6">
+			<div class="box">
+				<div class="row">
+					<div class="col-md-3 event ">
+						<div class="event-date">
+							<span style="font-size: 20px"><%= event.day %></span><br>
+							<span><%= event.month %></span>
+						</div>
+					</div>
+					<div class="col-md-9 event">
+						<span class="name"><%= event.name %></span><br>
+						<span class="date"><%= event.date %></span><br>
+						
+
+						
+
+						<div class="text-right">
+							<!--<p><= link_to users_events_show_path(event), data: { no_turbolink: true }, class: 'btn btn-secondary subscribe' do >Dettaglio < end ></p> -->
+							<br />
+							<a href="/users/events/<%= event.id %>/show" class="btn btn-info" role="button">Dettaglio</a>
+						</div>	
+						<div>
+							<button type="button" class="btn btn-w-m btn-success disabled"><%= event.seats - event.subscriptions.size  %> posti disp.</button>
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% end %>
+</div>
+	

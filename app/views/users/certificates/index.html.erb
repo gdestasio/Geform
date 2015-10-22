@@ -1,0 +1,16 @@
+<script>
+	$('.nav > li').removeClass('active');
+  $('#certificates').addClass('active');   
+</script>
+
+<br>
+<div class="row">
+  <% @certificates.each_with_index do |cert,index| %>
+	  <div class="col-md-4">		
+			<div class="certificate">
+				<h4><strong><%= cert.event.name %></strong></h4><br>
+				<%= link_to  users_certificates_download_path(cert.id), class: 'btn btn-default' do %><i class="fa fa-download"></i> Scarica Attestato<% end %>
+			</div>
+	  </div>
+	<% end %>
+</div>

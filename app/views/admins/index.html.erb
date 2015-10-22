@@ -1,0 +1,90 @@
+
+
+<div class="row">
+    <%= link_to admins_events_path do %>
+        <div class="col-lg-3" style="color:#666">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-primary pull-right"><i class="fa fa-list"></i></span>
+                    <h5>Eventi</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><%= @events.size %></h1>
+                    <small>eventi creati</small>
+                </div>
+            </div>
+        </div>
+    <% end %>
+    <%= link_to admins_users_path do %>
+        <div class="col-lg-3" style="color:#666">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-info pull-right"><i class="fa fa-users"></i></span>
+                    <h5>Utenti</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><%= @users.size %></h1>
+                    <small>utenti iscritti</small>
+                </div>
+            </div>
+        </div>
+    <% end %>
+    <!-- <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-primary pull-right"><i class="fa fa-retweet"></i></span>
+                <h5>Transiti</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins"><%= @transits.size %></h1>
+                <small>transiti totali</small>
+            </div>
+        </div>
+    </div> -->    
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-danger pull-right"><i class="fa fa-building"></i></span>
+                <h5>Associazioni</h5>
+            </div>
+            <div class="ibox-content">
+                <h1 class="no-margins"><%= @associations.size %></h1>
+                <small>associazioni iscritte</small>
+            </div>
+        </div>
+	</div>
+ </div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="widget white-bg p-xl">
+            <h2>
+                <%= current_admin.name%>
+            </h2>
+            <ul class="list-unstyled m-t-md">
+                <li>
+                    <span class="fa fa-envelope m-r-xs"></span>
+                    <label>Email:</label>
+                    <%= current_admin.email%>
+                </li>
+                <li>
+                    <span class="fa fa-history m-r-xs"></span>
+                    <label>Ultimo accesso:</label>
+                    <%= current_admin.last_sign_in_at%>
+                </li>
+                <li>
+                    <span class="fa fa-sign-in m-r-xs"></span>
+                    <label>Accessi:</label>
+                    <%= current_admin.sign_in_count%>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+	$('.menu').removeClass('active');
+    $('#home').addClass('active');
+</script>
